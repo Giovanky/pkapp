@@ -1,0 +1,41 @@
+.container{
+    height: 90vh;
+    width: 100vw;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    padding: 3.2rem 2.4rem;
+    position: relative;
+
+    & > *:not(button){
+        margin-bottom: 1.6rem; 
+    }
+    
+
+    &__title{
+        align-self: flex-start;
+        font-size: 3.6rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 3.2rem;
+    }
+
+    &__info{
+        align-self: flex-start;
+        color: var(--clr-dark-light);
+        font-size: 2rem;
+        font-weight: 400;
+        line-height: 1.2;
+        margin-bottom: 2.6rem;
+    }
+
+    &__text{
+        align-self: flex-end;
+        color: var(--clr-dark);
+        font-size: 1.6rem;
+        font-weight: 500;
+    }
+}

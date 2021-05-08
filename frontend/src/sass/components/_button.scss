@@ -1,0 +1,31 @@
+@use "../custom/variables" as var;
+
+.button{
+    border: none;
+    background-color: var(--clr-dark);
+    border-radius: .8rem;
+    color: var(--clr-white);
+    cursor: pointer;
+    font-family: 'Ubuntu', Arial;
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 3.6rem;
+    padding: 1.6rem 3.2rem;
+    text-decoration: none;
+    transition: transform .2s ease-out;
+    width: 100%;
+         
+    &:hover{
+        background-color: lighten($color: #000000, $amount: 8%);
+    }
+
+    &:active{
+        background-color: lighten($color: #000000, $amount: 16%);
+        transform: scale(.99);
+    }
+
+    &:focus{
+        outline: none;
+    }
+
+}

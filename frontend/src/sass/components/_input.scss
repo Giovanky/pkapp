@@ -1,0 +1,18 @@
+@use "../custom/variables" as var;
+
+.input{
+    background-color: transparent;
+    border-radius: .8rem;
+    border: var(--brd-default);
+    color: var(--clr-dark-light);
+    font-size: 1.6rem;
+    font-weight: 500;
+    padding: 1.6rem 2.4rem;
+    width: 100%;
+    transition: border .2s ease-out;
+
+    &:focus{
+        outline: none;
+        border: 1px solid var(--clr-loading); 
+    }
+}
