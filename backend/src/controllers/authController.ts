@@ -3,9 +3,7 @@ import Users, {IUsers} from '../models/Users'
 import nodemailer from 'nodemailer'
 import jwt from 'jsonwebtoken'
 import _ from 'lodash'
-
-const user = 'dorothea.streich50@ethereal.email'
-const pass = 'C7zwVF9TbxtVqx3DKR'
+import bcrypt from 'bcryptjs'
 
 class AuthController {
     public async signup(req: Request, res: Response) {
@@ -38,8 +36,8 @@ class AuthController {
                 host: 'smtp.ethereal.email',
                 port: 587,
                 auth: {
-                    user: user,
-                    pass: pass
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASS
                 }
             })
 
@@ -80,18 +78,17 @@ class AuthController {
                     message: 'No se ha encontrado el email del usuario'
                 })
             }
-            const correctPassword: boolean = await data.validatePassword(req.body.password) 
-            console.log(correctPassword)
-            if(!correctPassword){
-                return res.status(400).json({
-                    success: false,
-                    message: 'Contraseña incorrecta'
-                })
-            }
             if(!data.active) {
                 return res.status(400).json({
                     success: false,
                     message: 'Es necesario confirmar su correo'
+                })
+            }
+            const correctPassword = await bcrypt.compare(req.body.password, data.password) 
+            if(!correctPassword){
+                return res.status(400).json({
+                    success: false,
+                    message: 'Contraseña incorrecta'
                 })
             }
             const payload = {
@@ -102,7 +99,6 @@ class AuthController {
             const token = jwt.sign(payload, process.env.SEED, {
                 expiresIn: 60*60*48 
             })
-            console.log(token)
             return res.json({
                 success: true,
                 token
@@ -164,8 +160,8 @@ class AuthController {
                 port: 587,
                 secure: false,
                 auth: {
-                    user: 'dorothea.streich50@ethereal.email',
-                    pass: 'C7zwVF9TbxtVqx3DKR'
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASS
                 },
                 tls: {
                     rejectUnauthorized: false

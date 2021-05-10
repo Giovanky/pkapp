@@ -10,7 +10,7 @@ export interface IUsers extends Document{
     role?: string
     active?: boolean
     resetLink: string
-    escapePassword(): object
+    // escapePassword(): object
     encryptPassword(password: string): Promise<string>
     validatePassword(password: string): Promise<boolean>
 }
@@ -60,30 +60,7 @@ const userSchema = new Schema({
 
 userSchema.plugin(uniqueValidator, {message: '{PATH} ya se encuentra utilizado'})
 
-userSchema.pre<IUsers>('save', function(next) {
-    const user = this
-
-    userSchema.methods.toJSON = function escapePassword() {
-        const userObject = user.toObject()
-        delete userObject.password
-        return userObject
-    }
-
-    next()
-})
-
-userSchema.post<IUsers>('validate', function(next) {
-    const user = this
-
-    userSchema.methods.validatePassword = async function(password: string): Promise<boolean> {
-        return bcrypt.compare(password, user.password)
-    }
-
-    next()
-})
-
-
-userSchema.methods.encryptPassword = async(password: string): Promise<string> => {
+userSchema.methods.encryptPassword = async(password): Promise<string> => {
     const salt = await bcrypt.genSalt(16)
     return bcrypt.hash(password, salt)
 }
