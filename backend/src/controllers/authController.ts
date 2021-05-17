@@ -11,9 +11,9 @@ class AuthController {
             const {name, email, password} = req.body
             const verifyUser = await Users.findOne({email})
             if(verifyUser){
-                return res.status(400).json({
+                return res.json({
                     success: false,
-                    message: 'El correo ya existe para otro usuario'
+                    message: 'El correo ya existe para otro usuario.'
                 })
             }
             const newUser: IUsers = new Users({
@@ -53,17 +53,17 @@ class AuthController {
             if(!info){
                 return res.json({
                     success: false,
-                    message: 'Problemas al enviar correo de verificacion'
+                    message: 'Problemas al enviar correo de verificacion.'
                 })
             } 
             return res.json({
                 success: true,
-                message: 'Le hemos enviado un correo para verificar su cuenta'
+                message: 'Le hemos enviado un correo para verificar su cuenta.'
             })
         }catch(err){
             return res.status(500).json({
                 success: false,
-                message: 'Problemas al registrar el Usuario',
+                message: 'Problemas al registrar el Usuario.',
                 err
             })
         }
@@ -73,22 +73,22 @@ class AuthController {
         try{
             const data = await Users.findOne({email: req.body.email})
             if(!data){
-                return res.status(400).json({
+                return res.json({
                     success: false,
-                    message: 'No se ha encontrado el email del usuario'
+                    message: 'No se ha encontrado el email del usuario.'
                 })
             }
             if(!data.active) {
-                return res.status(400).json({
+                return res.json({
                     success: false,
-                    message: 'Es necesario confirmar su correo'
+                    message: 'Es necesario confirmar su correo.'
                 })
             }
             const correctPassword = await bcrypt.compare(req.body.password, data.password) 
             if(!correctPassword){
-                return res.status(400).json({
+                return res.json({
                     success: false,
-                    message: 'Contraseña incorrecta'
+                    message: 'Contraseña incorrecta.'
                 })
             }
             const payload = {
@@ -106,7 +106,7 @@ class AuthController {
         }catch(err){
             return res.status(500).json({
                 sucess: false,
-                message: 'No se pudo autenticar el Usuario',
+                message: 'No se pudo autenticar el Usuario.',
                 err
             })
         }
@@ -116,16 +116,16 @@ class AuthController {
         try{
             const {token} = req.body 
             if(!token) {
-                return res.status(400).json({
+                return res.json({
                     success: false,
-                    message: 'Es necesario un token'
+                    message: 'Es necesario un token.'
                 })
             }
             const decoded: any = jwt.verify(token, process.env.SEED)
             if(!decoded){
-                return res.status(400).json({
+                return res.json({
                     success: false,
-                    message: 'Token erroneo o expirado'
+                    message: 'Token erroneo o expirado.'
                 })
             }
             const {email} = decoded
@@ -133,12 +133,12 @@ class AuthController {
             await user.updateOne({active: true})
             return res.json({
                 success: true,
-                message: 'La cuenta ha sido activada'
+                message: 'La cuenta ha sido activada.'
             })
         }catch(err){
             return res.status(500).json({
                 success: false,
-                message: 'Error al activar la cuenta',
+                message: 'Error al activar la cuenta.',
                 err
             })
         }
@@ -149,9 +149,9 @@ class AuthController {
             const {email} = req.body
             const user = await Users.findOne({email})
             if(!user){
-                return res.status(400).json({
+                return res.json({
                     success: false,
-                    message: 'Problemas al realizar la operacion'
+                    message: 'Problemas al realizar la operacion.'
                 })
             }
             const token = jwt.sign({_id: user._id}, process.env.SEED, {expiresIn: 1200})
@@ -178,25 +178,24 @@ class AuthController {
             if(!info){
                 return res.json({
                     success: false,
-                    message: 'Problemas al cambiar su contraseña'
+                    message: 'Problemas al cambiar su contraseña.'
                 })
             }
             const data = await user.updateOne({resetLink: token})
             if(!data){
-                return res.status(500).json({
+                return res.json({
                     success: false,
-                    message: 'Enlace de resetear contraseña incorrecto'
+                    message: 'Enlace de resetear contraseña incorrecto.'
                 })
             }
-            console.log(data)
             return res.json({
                 success: true,
-                message: 'Le hemos enviado un enlace para resetear la contraseña'
+                message: 'Le hemos enviado un enlace para resetear la contraseña.'
             })
         }catch(err){
             return res.status(500).json({
                 success: false,
-                message: 'Error al enviar enlace para resetear contraseña',
+                message: 'Error al enviar enlace para resetear contraseña.',
                 err
             })
         }
@@ -206,16 +205,16 @@ class AuthController {
         try{
             const {resetLink, newPass} = req.body
             if(!resetLink){
-                return res.status(500).json({
+                return res.json({
                     success: false,
-                    message: 'Token incorrecto o expirado'
+                    message: 'Token incorrecto o expirado.'
                 })
             }
             const decoded = jwt.verify(resetLink, process.env.SEED)
             if(!decoded){
-                return res.status(500).json({
+                return res.json({
                     success: false,
-                    message: 'Error al verificar el token'
+                    message: 'Error al verificar el token.'
                 })
             }
             let user = await Users.findOne({resetLink})
@@ -227,19 +226,19 @@ class AuthController {
             user.password = await user.encryptPassword(user.password)
             const modifiedUser = await user.save()
             if(!modifiedUser){
-                return res.status(500).json({
+                return res.json({
                     success: false,
-                    message: 'Error al modificar contraseña',
+                    message: 'Error al modificar contraseña.',
                 })
             }
             return res.json({
                 success: true,
-                message: 'Tu contraseña ha sido modificada'
+                message: 'Tu contraseña ha sido modificada.'
             })
         }catch(err){
             return res.status(500).json({
                 success: false,
-                message: 'Error al resetear contraseña',
+                message: 'Error al resetear contraseña.',
                 err
             })
         }

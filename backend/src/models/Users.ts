@@ -10,9 +10,7 @@ export interface IUsers extends Document{
     role?: string
     active?: boolean
     resetLink: string
-    // escapePassword(): object
     encryptPassword(password: string): Promise<string>
-    validatePassword(password: string): Promise<boolean>
 }
 
 const userSchema = new Schema({
