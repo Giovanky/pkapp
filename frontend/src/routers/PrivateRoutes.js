@@ -11,7 +11,7 @@ export const PrivateRoutes = ({
             component={(props) => (
                 (isAuthenticated) 
                     ? (<Component {...props} />)
-                    : (<Redirect to='/auth/login' />)
+                    : (<Redirect to='/auth/signin' />)
             )}
         />
     )

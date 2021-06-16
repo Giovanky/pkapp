@@ -26,6 +26,7 @@ export const SignupScreen = () => {
         if(isFormValid()){
             dispatch(initRegister(name, email, password))
         }
+
     }
 
     const isFormValid = () => {
@@ -33,7 +34,7 @@ export const SignupScreen = () => {
             dispatch(setMessage('El nombre es obligatorio!', 'alert'))
             return false
         }else if(!isEmail(email)){
-            dispatch(setMessage('No es n email valido!', 'alert'))
+            dispatch(setMessage('No es un email valido!', 'alert'))
             return false
         }else if(password.trim() !== password2.trim() && password.length > 8){
             dispatch(setMessage('La contraseña debe poseer minimo 8 digitos y deben coincidir!', 'alert'))
@@ -111,7 +112,9 @@ export const SignupScreen = () => {
             <p 
                 className="container__text"
                 onClick={toSignin}
-            >Quieres iniciar sesion?</p>            
+            >
+                Quieres iniciar sesion?
+            </p>            
         </form>
     )
 }

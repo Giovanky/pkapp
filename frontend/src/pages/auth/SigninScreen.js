@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router'
 import { UiMessage } from '../../components/UiMessage'
 import { useForm } from '../../hooks/useForm'
 import { isEmail } from 'validator'
 import { deleteMessage, setMessage } from '../../actions/ui'
-import { initLogin } from '../../actions/auth'
+import { initAccountActivation, initLogin } from '../../actions/auth'
+import { useParams, Redirect } from 'react-router-dom'
 
 export const SigninScreen = () => {
-    const {loading} = useSelector(state => state.ui)
+    const { loading } = useSelector(state => state.ui)
     const history = useHistory()
     const dispatch = useDispatch()
+    const { token } = useParams()
+
+    useEffect(() => {
+
+    }, [token])
 
     const [values, handleInputChange] = useForm({
         email: '',
@@ -31,16 +37,16 @@ export const SigninScreen = () => {
 
     const handleSignin = (e) => {
         e.preventDefault()
-        if(isFormValid()){
+        if (isFormValid()) {
             dispatch(initLogin(email, password))
         }
     }
 
     const isFormValid = () => {
-        if(!isEmail(email)){
+        if (!isEmail(email)) {
             dispatch(setMessage('No es un email valido!', 'alert'))
             return false
-        }else if(password.trim().length === 0){
+        } else if (password.trim().length === 0) {
             dispatch(setMessage('Debes ingresar la contraseña!', 'alert'))
             return false
         }
@@ -48,8 +54,25 @@ export const SigninScreen = () => {
         return true
     }
 
+    console.log(token)
+    if (token) {
+        dispatch(initAccountActivation(token))
+        console.log(token)
+    }
+
+    // const tokenRec = useMemo((dispatch) => {
+    //     if (token) {
+    //         dispatch(initAccountActivation(token))
+    //         return <Redirect to="/" />
+    //         console.log(token)
+    //     }
+    // }, [token])
+    // if (!tokenRec) {
+    //     return <Redirect to="/auth/signin" />
+    // }
+
     return (
-        <form 
+        <form
             className="container"
             onSubmit={handleSignin}
         >
@@ -58,47 +81,48 @@ export const SigninScreen = () => {
             </h1>
 
             <UiMessage />
-            
+
             <p className="container__info">
                 Nos encanta verte por aqui! Disfruta y comparte con nosotros.
             </p>
 
-            <input 
-                className="input" 
-                type="text" 
-                name="email" 
-                autoComplete="off" 
+            <input
+                className="input"
+                type="text"
+                name="email"
+                autoComplete="off"
                 value={email}
                 onChange={handleInputChange}
-                placeholder="Ingresa tu email!" 
+                placeholder="Ingresa tu email!"
             />
 
-            <input 
-                className="input" 
-                type="password" 
-                name="password" 
+            <input
+                className="input"
+                type="password"
+                name="password"
                 value={password}
                 onChange={handleInputChange}
-                placeholder="Ingresa tu contraseña!" 
+                placeholder="Ingresa tu contraseña!"
             />
 
-            <button 
-                type="submit" 
+            <button
+                type="submit"
                 className="button"
                 disabled={loading}
             >
                 Entrar
             </button>
 
-            <a href="#"
+            <button
+                type="button"
                 className="button"
                 onClick={toSignup}
                 disabled={loading}
             >
                 Registrarte
-            </a>
-            
-            <p 
+            </button>
+
+            <p
                 className="container__text"
                 onClick={toForgot}
             >

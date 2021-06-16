@@ -22,6 +22,12 @@ export const AuthRouter = () => {
                     component={SignupScreen}
                 />
 
+                <Route 
+                    exact
+                    path="/auth/email-activate/:token"
+                    component={SigninScreen}
+                />
+
                 <Route
                     exact
                     path="/auth/forgot"

@@ -1,6 +1,6 @@
-import { types } from '../types/types'
 import { endLoading, initLoading, setMessage } from './ui'
 import { post, put } from 'axios'
+import { types } from '../types/types'
 
 export const initRegister = (name, email, password) => {
     return async(dispatch) => {
@@ -32,9 +32,16 @@ export const initLogin = (email, password) => {
                 email,
                 password
             }).catch(err => console.log(err))
+            console.table(email, password, data)
             if(!data){
                 dispatch(endLoading())
                 dispatch(setMessage('No hemos podido iniciar sesion.', 'alert')) 
+                return false
+            }
+            if(!data.data.success){
+                dispatch(endLoading())
+                dispatch(setMessage(data.data.message, 'alert'))
+                return false
             }
             dispatch(endLoading()) 
         }catch(err){
@@ -62,10 +69,34 @@ export const initPassRecovery = (email) => {
     }
 }
 
-export const login = (name, email) => ({
+export const initAccountActivation = (token) => {
+    return async(dispatch) => {
+        try{
+            const data = await put(`http://localhost:3666/api/auth/email-activate/`, {
+                token
+            }).catch(err => console.log(err))
+            if(!data){
+                dispatch(endLoading())
+                dispatch(setMessage('No hemos podido activar la cuenta.', 'alert')) 
+            }
+            if(!data.data.success){
+                dispatch(endLoading())
+                dispatch(setMessage(data.data.message, 'alert'))
+                return false
+            }
+            console.log(data)
+            dispatch(endLoading())
+            dispatch(setMessage(data.data.message, 'success'))
+        }catch(err){
+            console.log(err)
+        }
+    }
+} 
+
+export const login = (uid, displayName) => ({
     type: types.login,
     payload: {
-        name,
-        email
+        uid,
+        displayName
     }
 })

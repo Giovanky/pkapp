@@ -47,7 +47,7 @@ class AuthController {
                 subject: 'Pokeapp Account Activation Link',
                 html: `
                 <h2>Please click on given link to activate your Pokeapp account</h2>
-                <p>localhost:xxxx/authentication/activate/${token}</p>`
+                <p>http://localhost:3001/auth/email-activate/${token}</p>`
             })
         
             if(!info){
@@ -78,17 +78,17 @@ class AuthController {
                     message: 'No se ha encontrado el email del usuario.'
                 })
             }
-            if(!data.active) {
-                return res.json({
-                    success: false,
-                    message: 'Es necesario confirmar su correo.'
-                })
-            }
             const correctPassword = await bcrypt.compare(req.body.password, data.password) 
             if(!correctPassword){
                 return res.json({
                     success: false,
                     message: 'Contraseña incorrecta.'
+                })
+            }
+            if(!data.active) {
+                return res.json({
+                    success: false,
+                    message: 'Es necesario confirmar su correo.'
                 })
             }
             const payload = {
